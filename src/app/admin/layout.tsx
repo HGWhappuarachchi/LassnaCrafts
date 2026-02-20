@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import SignOutButton from "@/components/admin/SignOutButton";
 
 export default async function AdminLayout({
@@ -9,11 +8,14 @@ export default async function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
+    // Get the user just for display — middleware already enforces auth
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    // Middleware handles the main redirect, but double-check here as a safety net
-    if (!user) redirect("/admin/login");
+    // If unauthenticated (login page renders through here), just pass children through
+    if (!user) {
+        return <>{children}</>;
+    }
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -40,8 +42,6 @@ export default async function AdminLayout({
                     </div>
                 </div>
             </div>
-
-            {/* Page content */}
             <main>{children}</main>
         </div>
     );

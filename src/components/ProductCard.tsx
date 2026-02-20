@@ -9,6 +9,7 @@ export interface Product {
     title: string;
     description: string;
     price: number;
+    compare_at_price?: number | null;
     images: string[];
     stock_count: number;
     is_active: boolean;
@@ -35,12 +36,24 @@ export function ProductCard({ product }: ProductCardProps) {
     const [imgError, setImgError] = useState(false);
     const addItem = useCartStore((state) => state.addItem);
 
-    const mainImage = product.images[0] || "";
+    const mainImage = product.images?.[0] || "";
     const isOutOfStock = product.stock_count <= 0;
     const productHref = `/products/${product.slug ?? product.id}`;
 
+    // Discount calculation
+    const hasDiscount =
+        product.compare_at_price != null &&
+        product.compare_at_price > product.price;
+    const discountPercent = hasDiscount
+        ? Math.round(
+            ((product.compare_at_price! - product.price) /
+                product.compare_at_price!) *
+            100
+        )
+        : 0;
+
     const handleAddToCart = (e: React.MouseEvent) => {
-        e.preventDefault(); // Don't navigate when clicking Add to Cart
+        e.preventDefault();
         if (!isOutOfStock) {
             addItem({
                 id: product.id,
@@ -71,21 +84,26 @@ export function ProductCard({ product }: ProductCardProps) {
                     <PlaceholderImage title={product.title} />
                 )}
 
-                {/* Status Badges */}
+                {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+                    {hasDiscount && (
+                        <span className="bg-rose-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                            -{discountPercent}%
+                        </span>
+                    )}
                     {isOutOfStock && (
                         <span className="bg-white/90 backdrop-blur-sm text-slate-700 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
                             Out of Stock
                         </span>
                     )}
                     {!isOutOfStock && product.stock_count <= 5 && (
-                        <span className="bg-rose-100/90 backdrop-blur-sm text-rose-700 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
+                        <span className="bg-amber-100/90 backdrop-blur-sm text-amber-800 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
                             Only {product.stock_count} left
                         </span>
                     )}
                 </div>
 
-                {/* Add to Cart button — always visible on mobile; hover on desktop */}
+                {/* Add to Cart */}
                 {!isOutOfStock && (
                     <button
                         onClick={handleAddToCart}
@@ -96,7 +114,6 @@ export function ProductCard({ product }: ProductCardProps) {
                         Add to Cart
                     </button>
                 )}
-
                 {isOutOfStock && (
                     <div className="absolute bottom-3 left-3 right-3 bg-slate-100/80 text-slate-500 text-sm font-medium py-2.5 rounded-xl text-center z-10">
                         Out of Stock
@@ -114,11 +131,20 @@ export function ProductCard({ product }: ProductCardProps) {
                         {product.description}
                     </p>
                 </div>
-                <div className="mt-3 flex items-center justify-between">
-                    <span className="text-lg font-bold text-slate-900 tracking-tight">
-                        Rs. {product.price.toLocaleString("en-LK", { minimumFractionDigits: 2 })}
+                <div className="mt-3 flex items-center justify-between gap-2">
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-bold text-slate-900 tracking-tight">
+                            Rs. {product.price.toLocaleString("en-LK", { minimumFractionDigits: 2 })}
+                        </span>
+                        {hasDiscount && (
+                            <span className="text-sm text-slate-400 line-through">
+                                Rs. {product.compare_at_price!.toLocaleString("en-LK", { minimumFractionDigits: 2 })}
+                            </span>
+                        )}
+                    </div>
+                    <span className="text-xs text-rose-400 font-medium hidden md:inline flex-shrink-0">
+                        View Details →
                     </span>
-                    <span className="text-xs text-rose-400 font-medium hidden md:inline">View Details →</span>
                 </div>
             </div>
         </Link>

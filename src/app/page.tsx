@@ -15,6 +15,7 @@ interface Product {
   slug: string;
   description: string;
   price: number;
+  compare_at_price?: number | null;
   images: string[];
   stock_count: number;
   is_active: boolean;
@@ -36,7 +37,7 @@ export default async function Home({ searchParams }: Props) {
   // Build the products query
   let productsQuery = supabase
     .from("products")
-    .select("id, title, slug, description, price, images, stock_count, is_active")
+    .select("id, title, slug, description, price, compare_at_price, images, stock_count, is_active")
     .eq("is_active", true)
     .order("created_at", { ascending: false });
 
@@ -46,12 +47,13 @@ export default async function Home({ searchParams }: Props) {
       (c: Category) => c.slug === searchParams.category
     );
     if (matchedCat) {
-      productsQuery = supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      productsQuery = (supabase
         .from("products")
-        .select("id, title, slug, description, price, images, stock_count, is_active, category_id!inner(slug)")
+        .select("id, title, slug, description, price, compare_at_price, images, stock_count, is_active, category_id!inner(slug)")
         .eq("is_active", true)
         .eq("category_id.slug", searchParams.category)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })) as any;
     }
   }
 
@@ -108,8 +110,8 @@ export default async function Home({ searchParams }: Props) {
               <Link
                 href="/"
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeCategory === "all"
-                    ? "bg-rose-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600"
+                  ? "bg-rose-600 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600"
                   }`}
               >
                 All
@@ -119,8 +121,8 @@ export default async function Home({ searchParams }: Props) {
                   key={cat.id}
                   href={`/?category=${cat.slug}`}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeCategory === cat.slug
-                      ? "bg-rose-600 text-white shadow-sm"
-                      : "bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600"
+                    ? "bg-rose-600 text-white shadow-sm"
+                    : "bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600"
                     }`}
                 >
                   {cat.name}
@@ -165,17 +167,17 @@ export default async function Home({ searchParams }: Props) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
               {
-                icon: "🌷",
+                icon: "",
                 title: "Premium Quality",
                 desc: "We source only the freshest, longest-lasting blooms from trusted growers.",
               },
               {
-                icon: "🎨",
+                icon: "",
                 title: "Artisan Design",
                 desc: "Every arrangement is handcrafted by experienced florists with an eye for detail.",
               },
               {
-                icon: "🏠",
+                icon: "",
                 title: "Same Day Delivery",
                 desc: "Place your order before 2 PM for reliable same-day delivery across the city.",
               },

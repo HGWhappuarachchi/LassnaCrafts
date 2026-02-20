@@ -42,6 +42,7 @@ export default function AdminProductCreate() {
         slug: "",
         description: "",
         price: "",
+        compare_at_price: "",
         stock_count: "0",
         is_active: true,
         category_id: "",
@@ -116,6 +117,7 @@ export default function AdminProductCreate() {
                     slug: formData.slug,
                     description: formData.description || null,
                     price: parseFloat(formData.price),
+                    compare_at_price: formData.compare_at_price ? parseFloat(formData.compare_at_price) : null,
                     stock_count: parseInt(formData.stock_count),
                     is_active: formData.is_active,
                     category_id: formData.category_id || null,
@@ -132,6 +134,7 @@ export default function AdminProductCreate() {
                 slug: "",
                 description: "",
                 price: "",
+                compare_at_price: "",
                 stock_count: "0",
                 is_active: true,
                 category_id: "",
@@ -268,27 +271,52 @@ export default function AdminProductCreate() {
                         )}
                     </div>
 
-                    {/* Price */}
-                    <div className="space-y-2">
-                        <label
-                            htmlFor="price"
-                            className="block text-sm font-medium text-slate-700"
-                        >
-                            Price (LKR)
-                        </label>
-                        <input
-                            type="number"
-                            name="price"
-                            id="price"
-                            required
-                            step="0.01"
-                            min="0"
-                            className="mt-1 block w-full rounded-xl border border-slate-200 shadow-sm focus:border-rose-500 focus:ring-1 focus:ring-rose-500 sm:text-sm px-4 py-3 bg-slate-50 outline-none"
-                            placeholder="e.g. 8500.00"
-                            value={formData.price}
-                            onChange={handleInputChange}
-                        />
+                    {/* Price + Compare at Price */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label htmlFor="price" className="block text-sm font-medium text-slate-700">
+                                Sale Price (LKR)
+                            </label>
+                            <input
+                                type="number"
+                                name="price"
+                                id="price"
+                                required
+                                step="0.01"
+                                min="0"
+                                className="mt-1 block w-full rounded-xl border border-slate-200 shadow-sm focus:border-rose-500 focus:ring-1 focus:ring-rose-500 sm:text-sm px-4 py-3 bg-slate-50 outline-none"
+                                placeholder="e.g. 8500.00"
+                                value={formData.price}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="compare_at_price" className="block text-sm font-medium text-slate-700">
+                                Original Price{" "}
+                                <span className="font-normal text-slate-400">(optional)</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="compare_at_price"
+                                id="compare_at_price"
+                                step="0.01"
+                                min="0"
+                                className="mt-1 block w-full rounded-xl border border-slate-200 shadow-sm focus:border-rose-500 focus:ring-1 focus:ring-rose-500 sm:text-sm px-4 py-3 bg-slate-50 outline-none"
+                                placeholder="e.g. 12000.00"
+                                value={formData.compare_at_price}
+                                onChange={handleInputChange}
+                            />
+                        </div>
                     </div>
+                    {formData.compare_at_price && parseFloat(formData.compare_at_price) > parseFloat(formData.price || "0") && (
+                        <p className="text-xs text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg">
+                            ✓ Discount badge will show{" "}
+                            <strong>
+                                -{Math.round(((parseFloat(formData.compare_at_price) - parseFloat(formData.price || "0")) / parseFloat(formData.compare_at_price)) * 100)}% off
+                            </strong>{" "}
+                            on the product card
+                        </p>
+                    )}
 
                     {/* Stock */}
                     <div className="space-y-2">
