@@ -47,13 +47,12 @@ export default async function Home({ searchParams }: Props) {
       (c: Category) => c.slug === searchParams.category
     );
     if (matchedCat) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      productsQuery = (supabase
+      productsQuery = supabase
         .from("products")
-        .select("id, title, slug, description, price, compare_at_price, images, stock_count, is_active, category_id!inner(slug)")
+        .select("id, title, slug, description, price, compare_at_price, images, stock_count, is_active")
         .eq("is_active", true)
-        .eq("category_id.slug", searchParams.category)
-        .order("created_at", { ascending: false })) as any;
+        .eq("category_id", matchedCat.id)
+        .order("created_at", { ascending: false });
     }
   }
 
