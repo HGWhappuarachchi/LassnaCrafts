@@ -175,11 +175,7 @@ export default async function Home({ searchParams }: Props) {
                 title: "Artisan Design",
                 desc: "Every arrangement is handcrafted by experienced florists with an eye for detail.",
               },
-              {
-                icon: "",
-                title: "Same Day Delivery",
-                desc: "Place your order before 2 PM for reliable same-day delivery across the city.",
-              },
+             
             ].map((item) => (
               <div key={item.title} className="flex flex-col items-center">
                 <div className="text-4xl mb-4">{item.icon}</div>
