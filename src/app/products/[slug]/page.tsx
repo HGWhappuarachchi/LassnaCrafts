@@ -137,7 +137,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     <div className="mt-4 border-t border-slate-100 pt-6">
                         <p className="text-xs text-slate-400 text-center mb-3">Or order directly</p>
                         <a
-                            href={`https://wa.me/94771296311?text=Hi Lassana! I'd like to order: *${product.title}* (Rs. ${Number(product.price).toLocaleString()}). Please confirm availability.`}
+                            href={`https://wa.me/94772430304?text=Hi Lassana! I'd like to order: *${product.title}* (Rs. ${Number(product.price).toLocaleString()}). Please confirm availability.`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#1EBE5A] text-white font-medium py-3.5 rounded-xl shadow-lg shadow-green-200 transition-all"
