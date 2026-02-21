@@ -76,7 +76,7 @@ export function CartDrawer() {
     };
 
     const handleCheckout = () => {
-        const baseUrl = "https://wa.me/94771296311";
+        const baseUrl = "https://wa.me/94772430304";
         let message = "Hello Lassana, I'd like to place an order:%0A%0A";
         items.forEach(item => {
             message += `- ${item.title} (x${item.quantity}) - Rs. ${(item.price * item.quantity).toLocaleString()}%0A`;
